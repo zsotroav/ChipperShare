@@ -70,16 +70,23 @@ namespace ChipperShare
             _listenerServer = new TcpListener(IP, Port);
             _listenerServer.Start();
             PublicLog?.Invoke($@"Server started on IP {IP}");
+            _listenerServer.Server.ReceiveTimeout = 1000 * 60;
 
             _client = _listenerServer.AcceptTcpClient();
-            _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
-
-            PublicLog?.Invoke($@"{_remoteIP} attempted a connection. Waiting for handshake.");
-
-            Authenticate();
+            if (_client.Connected)
+            {
+                _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
+                PublicLog?.Invoke($@"{_remoteIP} attempted a connection. Waiting for handshake.");
+                Authenticate();
+            }
+            else
+            {
+                PublicLog?.Invoke("Connection timed out. Stopping server.");
+                _listenerServer.Stop();
+            }
         }
 
-        public void Authenticate()
+        private void Authenticate()
         {
             string expected = $"{IP}:{_remoteIP}:{ProtocolVersion}";
 

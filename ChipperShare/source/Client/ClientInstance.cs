@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Reflection.Emit;
 using System.Windows.Forms;
 using LibChipper;
 
@@ -64,14 +63,20 @@ namespace ChipperShare
 
         public void Receive()
         {
+            PublicLog?.Invoke("The server accepted the connection. Receiving file...");
             _data = null;
             int i;
             while ((i = _stream.Read(_buffer, 0, _buffer.Length)) != 0)
             {
                 _data = _buffer[..i];
             }
-
+            
             _data = _algorithm.EncryptData(_data, Key);
+            PublicLog?.Invoke("File received.");
+
+            _stream.Close();
+            _client.Close();
+            PublicLog?.Invoke("Connection closed.");
 
             string loc = SaveFile?.Invoke();
             if (string.IsNullOrEmpty(loc))
@@ -82,6 +87,7 @@ namespace ChipperShare
             }
 
             LibChipper.External.SaveBin(loc,_data);
+            PublicLog?.Invoke("Saved file.");
         }
     }
 }
