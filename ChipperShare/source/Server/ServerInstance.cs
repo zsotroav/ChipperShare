@@ -1,10 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Net;
-using System.Net.Mime;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibChipper;
 
@@ -19,27 +15,21 @@ namespace ChipperShare
         public int Port = 13000;
         public int ProtocolVersion = 1;
 
+        public string FileLoc;
+
         private TcpListener _listenerServer;
         private IPAddress _remoteIP;
         private TcpClient _client;
 
         private AlgorithmInstance _algorithm = new();
 
-        private byte[] buffer = new byte[255];
-        private byte[] data;
+        private byte[] _buffer = new byte[255];
+        private byte[] _data;
         private byte[] _key;
+        private NetworkStream _stream;
 
         public void Listen()
         {
-            _listenerServer = new TcpListener(IP, Port);
-            _listenerServer.Start();
-            PublicLog?.Invoke($@"Server started on IP {IP}");
-
-            _client = _listenerServer.AcceptTcpClient();
-            _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
-
-            PublicLog?.Invoke($@"{_remoteIP} attempted a connection. Waiting for encryption key.");
-
             bool trying = true;
             while (trying)
             {
@@ -75,6 +65,17 @@ namespace ChipperShare
                     }
                 }
             }
+
+
+            _listenerServer = new TcpListener(IP, Port);
+            _listenerServer.Start();
+            PublicLog?.Invoke($@"Server started on IP {IP}");
+
+            _client = _listenerServer.AcceptTcpClient();
+            _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
+
+            PublicLog?.Invoke($@"{_remoteIP} attempted a connection. Waiting for handshake.");
+
             Authenticate();
         }
 
@@ -82,25 +83,38 @@ namespace ChipperShare
         {
             string expected = $"{IP}:{_remoteIP}:{ProtocolVersion}";
 
-            var stream = _client.GetStream();
+            _stream = _client.GetStream();
 
-            while (stream.Read(buffer, 0, buffer.Length) != 0)
+            int i = _stream.Read(_buffer, 0, _buffer.Length);
+            _data = _buffer[..i];
+
+            if (AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, _key)) != expected)
             {
-                data = buffer;
-
-                stream.Write(data, 0, data.Length);
-            }
-
-            if (_algorithm.EncryptData(data, _key) != AlgorithmStatic.EncodeBytes(expected))
-            {
+                _stream.Write(AlgorithmStatic.EncodeBytes("ABORT"));
                 _client.Close();
                 _listenerServer.Stop();
                 PublicLog?.Invoke("The client-server handshake failed. Connection aborted.");
+                return;
             }
-            else
-            {
 
-            }
+            PublicLog?.Invoke("Successful handshake.");
+
+            _stream.Write(AlgorithmStatic.EncodeBytes("READY"));
+
+            Send();
+        }
+
+        private void Send()
+        {
+            var sendData = LibChipper.External.LoadBin(FileLoc);
+            sendData = _algorithm.EncryptData(sendData, _key);
+
+            _stream.Write(sendData);
+
+            _stream.Close();
+            _client.Close();
+            _listenerServer.Stop();
+            PublicLog?.Invoke("File sent. Stopping server.");
         }
     }
 }

@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
+using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChipperShare
@@ -22,16 +15,20 @@ namespace ChipperShare
             InitializeComponent();
             _server.PublicLog += Log;
 
+            _server.FileLoc = OpenFile();
+            if (_server.FileLoc == "") return;
+
             var listenThread = new Thread(_server.Listen)
             {
                 Name = "Listen thread"
             };
+            listenThread.SetApartmentState(ApartmentState.STA);
             listenThread.Start();
         }
 
         private void Log(string text)
         {
-            if (this.textStatus.InvokeRequired)
+            if (textStatus.InvokeRequired)
             {
                 LogCallback d = Log;
                 Invoke(d, text);
@@ -41,6 +38,16 @@ namespace ChipperShare
                 textStatus.AppendText(Environment.NewLine);
                 textStatus.AppendText(text);
             }
+        }
+
+        private string OpenFile()
+        {
+            openFileDialog.ShowDialog();
+            string loc = openFileDialog.FileName;
+
+            if (File.Exists(loc))
+                return loc;
+            return "";
         }
     }
 }

@@ -18,7 +18,8 @@ namespace ChipperShare
 
         private void OpenClient(object sender, EventArgs e)
         {
-
+            var formClient = new FormClient();
+            formClient.Show();
         }
     }
 }

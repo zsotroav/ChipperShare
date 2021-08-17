@@ -9,10 +9,16 @@ namespace LibChipper
     internal class External
     {
         public static readonly string WritePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static readonly string DocumentsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         public static readonly string MainPath = Path.Combine(WritePath, "zsotroav", "chipper");
 
         public static void SaveBin(string loc, byte[] data)
         {
+            if (!FileExists(loc))
+            {
+                Directory.GetParent(loc)?.Create();
+                File.Create(loc).Close();
+            }
             using var fs = File.Create(loc);
             fs.Write(data, 0, data.Length);
             fs.Close();
@@ -21,6 +27,16 @@ namespace LibChipper
         public static byte[] LoadBin(string loc)
         {
             return File.ReadAllBytes(loc);
+        }
+
+        public static bool FileExists(string loc)
+        {
+            return File.Exists(loc);
+        }
+
+        public static string CombinePath(params string[] paths)
+        {
+            return Path.Combine(paths);
         }
     }
 }
