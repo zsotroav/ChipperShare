@@ -10,20 +10,24 @@ namespace ChipperShare
         private delegate void LogCallback(string text);
         private readonly ServerInstance _server = new();
 
-        public FormServer()
+        public FormServer(bool direct = false, string directLoc = "")
         {
             InitializeComponent();
             _server.PublicLog += Log;
 
-            openFileDialog.ShowDialog();
-            var loc = openFileDialog.FileName;
-            if (string.IsNullOrEmpty(loc) || !File.Exists(loc))
+            if (direct) _server.FileLoc = directLoc;
+            else
             {
-                Log("File open aborted, cancelling server...");
-                return;
-            }
+                openFileDialog.ShowDialog();
+                var loc = openFileDialog.FileName;
+                if (string.IsNullOrEmpty(loc) || !File.Exists(loc))
+                {
+                    Log("File open aborted, cancelling server...");
+                    return;
+                }
 
-            _server.FileLoc = loc;
+                _server.FileLoc = loc;
+            }
 
             var listenThread = new Thread(_server.Listen)
             {
