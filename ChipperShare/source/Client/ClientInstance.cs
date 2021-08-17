@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using LibChipper;
@@ -25,6 +26,7 @@ namespace ChipperShare
 
         private byte[] _buffer = new byte[255];
         private byte[] _data;
+        private List<byte> _dataList = new();
         private NetworkStream _stream;
 
         public byte[] Key;
@@ -65,11 +67,18 @@ namespace ChipperShare
         {
             PublicLog?.Invoke("The server accepted the connection. Receiving file...");
             _data = null;
+            _dataList = new List<byte>();
+
             int i;
             while ((i = _stream.Read(_buffer, 0, _buffer.Length)) != 0)
             {
-                _data = _buffer[..i];
+                foreach (var b in _buffer[..i])
+                {
+                    _dataList.Add(b);
+                }
             }
+
+            _data = _dataList.ToArray();
             
             _data = _algorithm.EncryptData(_data, Key);
             PublicLog?.Invoke("File received.");
