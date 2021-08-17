@@ -42,18 +42,18 @@ namespace ChipperShare
                 }
                 else
                 {
-                    var mbRes = MessageBox.Show(@"Key entering aborted. Do you want to continue without encryption?",
-                        @"Error!", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
+                    var mbRes = MessageBox.Show(@"Key entering aborted. You will continue without encryption.",
+                        @"Warning", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
                     switch (mbRes)
                     {
                         case DialogResult.Abort:
-                            _client.Close();
-                            _listenerServer.Stop();
-                            PublicLog?.Invoke("Aborted.");
+                            PublicLog?.Invoke("Aborted server start.");
                             return;
                         case DialogResult.Ignore:
                             _key = new byte[] { 0x00 };
                             trying = false;
+                            break;
+                        case DialogResult.Retry:
                             break;
                         case DialogResult.None:
                             _client.Close();
@@ -70,9 +70,10 @@ namespace ChipperShare
             _listenerServer = new TcpListener(IP, Port);
             _listenerServer.Start();
             PublicLog?.Invoke($@"Server started on IP {IP}");
-            _listenerServer.Server.ReceiveTimeout = 1000 * 60;
-
+            _listenerServer.Server.ReceiveTimeout = 1000 * 5;
+            
             _client = _listenerServer.AcceptTcpClient();
+
             if (_client.Connected)
             {
                 _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
@@ -81,7 +82,7 @@ namespace ChipperShare
             }
             else
             {
-                PublicLog?.Invoke("Connection timed out. Stopping server.");
+                PublicLog?.Invoke("Connection timed out. Stopping server...");
                 _listenerServer.Stop();
             }
         }

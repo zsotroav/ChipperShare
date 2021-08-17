@@ -79,7 +79,7 @@ namespace ChipperShare
             this.textStatus.Name = "textStatus";
             this.textStatus.Size = new System.Drawing.Size(230, 81);
             this.textStatus.TabIndex = 5;
-            this.textStatus.Text = "Please use the Chipper Share Client to connect to the server.";
+            this.textStatus.Text = "Please use the ChipperShare Client to connect to the server.";
             // 
             // openFileDialog
             // 

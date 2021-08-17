@@ -59,13 +59,15 @@ namespace ChipperShare
                 }
                 else
                 {
-                    var mbRes = MessageBox.Show(@"Key entering aborted. Do you want to continue without encryption?",
-                        @"Error!", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
+                    var mbRes = MessageBox.Show(@"Key entering aborted. You will continue without encryption.",
+                        @"Warning", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Exclamation);
                     switch (mbRes)
                     {
                         case DialogResult.Abort:
                             Log("Aborted.");
                             return;
+                        case DialogResult.Retry:
+                            break;
                         case DialogResult.Ignore:
                             _client.Key = new byte[] { 0x00 };
                             trying = false;

@@ -15,12 +15,16 @@ namespace ChipperShare
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (TextKeyPass.Text == TextKeyPass2.Text)
+            if (TextKeyPass.Text == "")
+            {
+                DialogResult = DialogResult.Abort;
+                Close();
+            } else if (TextKeyPass.Text == TextKeyPass2.Text)
             {
                 Passphrase = TextKeyPass.Text;
                 Key = LibChipper.AlgorithmStatic.GenKey(Passphrase);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
             else
             {

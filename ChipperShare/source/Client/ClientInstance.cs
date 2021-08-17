@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
@@ -33,8 +34,24 @@ namespace ChipperShare
 
         public void Connect()
         {
-            _client = new TcpClient(RemoteIP.ToString(), Port);
             PublicLog?.Invoke($@"Attempting connection to {RemoteIP}");
+
+            try
+            {
+                _client = new TcpClient(RemoteIP.ToString(), Port);
+            }
+            catch (SocketException e)
+            {
+                PublicLog?.Invoke(e.Message);
+                MessageBox.Show(e.Message, @"Socket Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (ArgumentNullException e)
+            {
+                PublicLog?.Invoke(e.Message);
+                MessageBox.Show(e.Message, @"Argument Null Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             Authenticate();
         }
@@ -59,7 +76,7 @@ namespace ChipperShare
                 _stream.Close();
                 _client.Close();
                 PublicLog?.Invoke("The server refused the connection.");
-                PublicLog?.Invoke("Aborted connection.");
+                PublicLog?.Invoke("Connection aborted.");
             }
         }
 
