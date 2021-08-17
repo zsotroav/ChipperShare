@@ -15,7 +15,6 @@ namespace ChipperShare
             InitializeComponent();
             _client.PublicLog += Log;
             _client.SaveFile += SaveFileLoc;
-            Log($@"Current IP: {_client.IP}");
         }
 
         private void Log(string text)
@@ -52,6 +51,7 @@ namespace ChipperShare
             {
                 var formKey = new FormKey();
                 var res = formKey.ShowDialog();
+                _client.IP = formKey.IP;
                 if (res == DialogResult.OK)
                 {
                     trying = false;

@@ -15,7 +15,7 @@ namespace ChipperShare
         public delegate void LogDel(string log);
         public event LogDel PublicLog;
 
-        public IPAddress IP = UtilStatic.GetLocalIPAddress();
+        public IPAddress IP;
         public IPAddress RemoteIP;
 
         public int Port = 13000;

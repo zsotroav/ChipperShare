@@ -36,6 +36,8 @@ namespace ChipperShare
             this.label3 = new System.Windows.Forms.Label();
             this.TextKeyPass2 = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
+            this.comboIP = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // TextKeyName
@@ -72,7 +74,7 @@ namespace ChipperShare
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 42);
+            this.label3.Location = new System.Drawing.Point(12, 44);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(97, 15);
             this.label3.TabIndex = 5;
@@ -80,7 +82,7 @@ namespace ChipperShare
             // 
             // TextKeyPass2
             // 
-            this.TextKeyPass2.Location = new System.Drawing.Point(115, 39);
+            this.TextKeyPass2.Location = new System.Drawing.Point(115, 41);
             this.TextKeyPass2.Name = "TextKeyPass2";
             this.TextKeyPass2.Size = new System.Drawing.Size(203, 23);
             this.TextKeyPass2.TabIndex = 4;
@@ -88,19 +90,38 @@ namespace ChipperShare
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(223, 68);
+            this.btnSave.Location = new System.Drawing.Point(223, 70);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(95, 25);
+            this.btnSave.Size = new System.Drawing.Size(95, 23);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "Submit";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // comboIP
+            // 
+            this.comboIP.FormattingEnabled = true;
+            this.comboIP.Location = new System.Drawing.Point(115, 70);
+            this.comboIP.Name = "comboIP";
+            this.comboIP.Size = new System.Drawing.Size(102, 23);
+            this.comboIP.TabIndex = 9;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 73);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 15);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "IP address";
             // 
             // FormKey
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(330, 105);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.comboIP);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.TextKeyPass2);
@@ -128,5 +149,7 @@ namespace ChipperShare
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox TextKeyPass2;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.ComboBox comboIP;
+        private System.Windows.Forms.Label label4;
     }
 }

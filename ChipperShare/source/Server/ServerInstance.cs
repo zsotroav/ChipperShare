@@ -12,7 +12,7 @@ namespace ChipperShare
         public delegate void LogDel(string log);
         public event LogDel PublicLog;
 
-        public IPAddress IP = UtilStatic.GetLocalIPAddress();
+        public IPAddress IP;
         public int Port = 13000;
         public int ProtocolVersion = 1;
 
@@ -36,6 +36,7 @@ namespace ChipperShare
             {
                 var formKey = new FormKey();
                 var res = formKey.ShowDialog();
+                IP = formKey.IP;
                 if (res == DialogResult.OK)
                 {
                     trying = false;

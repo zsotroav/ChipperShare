@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows.Forms;
-using LibChipper;
 
 namespace ChipperShare
 {
@@ -8,9 +9,22 @@ namespace ChipperShare
     {
         public string Passphrase;
         public byte[] Key;
+        public IPAddress IP;
+
         public FormKey()
         {
             InitializeComponent();
+
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    comboIP.Items.Add(ip);
+                    comboIP.Text = ip.ToString();
+                    IP = ip;
+                }
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -25,6 +39,7 @@ namespace ChipperShare
                 Key = LibChipper.AlgorithmStatic.GenKey(Passphrase);
                 DialogResult = DialogResult.OK;
                 Close();
+                IP = IPAddress.Parse(comboIP.Text);
             }
             else
             {
