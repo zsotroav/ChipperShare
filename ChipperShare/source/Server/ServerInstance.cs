@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Windows.Forms;
 using LibChipper;
 
@@ -70,12 +71,15 @@ namespace ChipperShare
             _listenerServer = new TcpListener(IP, Port);
             _listenerServer.Start();
             PublicLog?.Invoke($@"Server started on IP {IP}");
-            _listenerServer.Server.ReceiveTimeout = 1000 * 5;
-            
-            _client = _listenerServer.AcceptTcpClient();
 
-            if (_client.Connected)
+            var start = DateTime.UtcNow;
+            while (DateTime.UtcNow - start < TimeSpan.FromMinutes(1) && !_listenerServer.Pending())
+                Thread.Sleep(50);
+
+            if (_listenerServer.Pending())
             {
+                _client = _listenerServer.AcceptTcpClient();
+
                 _remoteIP = ((IPEndPoint)_client.Client.RemoteEndPoint)?.Address;
                 PublicLog?.Invoke($@"{_remoteIP} attempted a connection. Waiting for handshake.");
                 Authenticate();
