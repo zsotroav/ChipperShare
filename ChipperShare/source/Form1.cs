@@ -12,14 +12,12 @@ namespace ChipperShare
 
         private void OpenServer(object sender, EventArgs e)
         {
-            var formServer = new FormServer();
-            formServer.Show();
+            new FormServer().Show();
         }
 
         private void OpenClient(object sender, EventArgs e)
         {
-            var formClient = new FormClient();
-            formClient.Show();
+            new FormClient().Show();
         }
     }
 }

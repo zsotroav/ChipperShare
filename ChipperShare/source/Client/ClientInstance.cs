@@ -104,12 +104,15 @@ namespace ChipperShare
             _client.Close();
             PublicLog?.Invoke("Connection closed.");
 
-            string loc = SaveFile?.Invoke();
-            if (string.IsNullOrEmpty(loc))
+            var loc = SaveFile?.Invoke();
+            while (string.IsNullOrEmpty(loc))
             {
-                MessageBox.Show(@"No save location returned, defaulting to Documents/Received.file",
-                    @"Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                loc = External.CombinePath(External.DocumentsDir, "Received.file");
+                var dr = MessageBox.Show(
+                    @"The save file dialog was forcibly closed. Do you want to discard the received file?",
+                    @"Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (dr == DialogResult.Yes)
+                    return;
+                loc = SaveFile?.Invoke();
             }
 
             LibChipper.External.SaveBin(loc,_data);

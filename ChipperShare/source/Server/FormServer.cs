@@ -15,8 +15,15 @@ namespace ChipperShare
             InitializeComponent();
             _server.PublicLog += Log;
 
-            _server.FileLoc = OpenFile();
-            if (_server.FileLoc == "") return;
+            openFileDialog.ShowDialog();
+            var loc = openFileDialog.FileName;
+            if (string.IsNullOrEmpty(loc) || !File.Exists(loc))
+            {
+                Log("File open aborted, cancelling server...");
+                return;
+            }
+
+            _server.FileLoc = loc;
 
             var listenThread = new Thread(_server.Listen)
             {
@@ -38,16 +45,6 @@ namespace ChipperShare
                 textStatus.AppendText(Environment.NewLine);
                 textStatus.AppendText(text);
             }
-        }
-
-        private string OpenFile()
-        {
-            openFileDialog.ShowDialog();
-            string loc = openFileDialog.FileName;
-
-            if (File.Exists(loc))
-                return loc;
-            return "";
         }
     }
 }
