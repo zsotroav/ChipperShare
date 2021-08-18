@@ -13,8 +13,8 @@ namespace ChipperShare
         public event LogDel PublicLog;
 
         public IPAddress IP;
-        public int Port = 13000;
-        public int ProtocolVersion = 1;
+        public static readonly int Port = 13000;
+        public static readonly int ProtocolVersion = 1;
 
         public string FileLoc;
 
@@ -119,12 +119,31 @@ namespace ChipperShare
 
         private void Send()
         {
+            // File name
             var fileNameByte = AlgorithmStatic.EncodeBytes( External.NameFromPath(FileLoc));
             _stream.Write(_algorithm.EncryptData(fileNameByte, _key));
 
-            var sendData = External.LoadBin(FileLoc);
-            _stream.Write(_algorithm.EncryptData(sendData, _key));
+            _data = _algorithm.EncryptData(External.LoadBin(FileLoc), _key);
+            
+            // File size
+            var dataLength = BitConverter.GetBytes(_data.Length);
+            _stream.Write(dataLength, 0, 4);
 
+            var bytesSent = 0;
+            var bytesLeft = _data.Length;
+
+            // File
+            while (bytesLeft > 0)
+            {
+                var curDataSize = Math.Min(1024, bytesLeft);
+
+                _stream.Write(_data, bytesSent, curDataSize);
+
+                bytesSent += curDataSize;
+                bytesLeft -= curDataSize;
+            }
+
+            // Close connection
             _stream.Close();
             _client.Close();
             _listenerServer.Stop();
