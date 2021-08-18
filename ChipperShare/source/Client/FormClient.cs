@@ -33,8 +33,12 @@ namespace ChipperShare
 
         private string SaveFileLoc()
         {
-            saveFileDialog.ShowDialog();
-            return saveFileDialog.FileName;
+            saveFileDialog.FileName = _client.FileName;
+            saveFileDialog.Filter = $@"{_client.FileExt} file|*{_client.FileExt}";
+            saveFileDialog.DefaultExt = _client.FileExt;
+            var dr = saveFileDialog.ShowDialog();
+
+            return dr == DialogResult.OK ? saveFileDialog.FileName : "";
         }
 
         private void btnConnect_Click(object sender, EventArgs e)

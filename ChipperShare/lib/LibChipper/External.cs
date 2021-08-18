@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 
 // Chipper library by zsotroav
@@ -24,14 +25,12 @@ namespace LibChipper
             fs.Close();
         }
 
-        public static byte[] LoadBin(string loc)
-        {
-            return File.ReadAllBytes(loc);
-        }
+        public static byte[] LoadBin(string loc) => File.ReadAllBytes(loc);
 
-        public static bool FileExists(string loc)
-        {
-            return File.Exists(loc);
-        }
+        public static bool FileExists(string loc) => File.Exists(loc);
+
+        public static string NameFromPath(string path) => Path.GetFileName(path);
+
+        public static string ExtFromPath(string path) => Path.GetExtension(path);
     }
 }

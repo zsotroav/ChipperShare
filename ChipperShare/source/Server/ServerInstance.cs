@@ -119,10 +119,11 @@ namespace ChipperShare
 
         private void Send()
         {
-            var sendData = External.LoadBin(FileLoc);
-            sendData = _algorithm.EncryptData(sendData, _key);
+            var fileNameByte = AlgorithmStatic.EncodeBytes( External.NameFromPath(FileLoc));
+            _stream.Write(_algorithm.EncryptData(fileNameByte, _key));
 
-            _stream.Write(sendData);
+            var sendData = External.LoadBin(FileLoc);
+            _stream.Write(_algorithm.EncryptData(sendData, _key));
 
             _stream.Close();
             _client.Close();

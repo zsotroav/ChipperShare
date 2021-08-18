@@ -31,6 +31,8 @@ namespace ChipperShare
         private NetworkStream _stream;
 
         public byte[] Key;
+        public string FileName;
+        public string FileExt;
 
         public void Connect()
         {
@@ -82,11 +84,15 @@ namespace ChipperShare
 
         public void Receive()
         {
+            int i = _stream.Read(_buffer, 0, _buffer.Length);
+            _data = _buffer[..i];
+            FileName = AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, Key));
+            FileExt = External.ExtFromPath(FileName);
+
             PublicLog?.Invoke("The server accepted the connection. Receiving file...");
             _data = null;
             _dataList = new List<byte>();
 
-            int i;
             while ((i = _stream.Read(_buffer, 0, _buffer.Length)) != 0)
             {
                 foreach (var b in _buffer[..i])
