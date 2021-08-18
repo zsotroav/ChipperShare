@@ -7,7 +7,7 @@ using LibChipper;
 
 namespace ChipperShare
 {
-    class ServerInstance
+    internal class ServerInstance
     {
         public delegate void LogDel(string log);
         public event LogDel PublicLog;
@@ -31,7 +31,7 @@ namespace ChipperShare
 
         public void Listen()
         {
-            bool trying = true;
+            var trying = true;
             while (trying)
             {
                 var formKey = new FormKey();
@@ -94,11 +94,11 @@ namespace ChipperShare
 
         private void Authenticate()
         {
-            string expected = $"{IP}:{_remoteIP}:{ProtocolVersion}";
+            var expected = $"{IP}:{_remoteIP}:{ProtocolVersion}";
 
             _stream = _client.GetStream();
 
-            int i = _stream.Read(_buffer, 0, _buffer.Length);
+            var i = _stream.Read(_buffer, 0, _buffer.Length);
             _data = _buffer[..i];
 
             if (AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, _key)) != expected)
@@ -119,7 +119,7 @@ namespace ChipperShare
 
         private void Send()
         {
-            var sendData = LibChipper.External.LoadBin(FileLoc);
+            var sendData = External.LoadBin(FileLoc);
             sendData = _algorithm.EncryptData(sendData, _key);
 
             _stream.Write(sendData);

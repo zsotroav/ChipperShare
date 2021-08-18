@@ -18,12 +18,11 @@ namespace ChipperShare
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    comboIP.Items.Add(ip);
-                    comboIP.Text = ip.ToString();
-                    IP = ip;
-                }
+                if (ip.AddressFamily != AddressFamily.InterNetwork) continue;
+
+                comboIP.Items.Add(ip);
+                comboIP.Text = ip.ToString();
+                IP = ip;
             }
         }
 

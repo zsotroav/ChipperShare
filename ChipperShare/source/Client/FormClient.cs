@@ -39,14 +39,14 @@ namespace ChipperShare
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            bool valid = IPAddress.TryParse(textIP.Text, out var remoteIP);
+            var valid = IPAddress.TryParse(textIP.Text, out var remoteIP);
             if (!valid)
             {
                 MessageBox.Show(@"Invalid IP address!", @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             
-            bool trying = true;
+            var trying = true;
             while (trying)
             {
                 var formKey = new FormKey();

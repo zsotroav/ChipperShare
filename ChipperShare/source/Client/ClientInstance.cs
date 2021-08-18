@@ -7,7 +7,7 @@ using LibChipper;
 
 namespace ChipperShare
 {
-    class ClientInstance
+    internal class ClientInstance
     {
         public delegate string SaveDel();
         public event SaveDel SaveFile;
@@ -58,10 +58,10 @@ namespace ChipperShare
 
         public void Authenticate()
         {
-            string send = $"{RemoteIP}:{IP}:{ProtocolVersion}";
+            var send = $"{RemoteIP}:{IP}:{ProtocolVersion}";
 
-            byte[] handRaw = LibChipper.AlgorithmStatic.EncodeBytes(send);
-            byte[] handShake = _algorithm.EncryptData(handRaw, Key);
+            var handRaw = AlgorithmStatic.EncodeBytes(send);
+            var handShake = _algorithm.EncryptData(handRaw, Key);
             
             _stream = _client.GetStream();
             _stream.Write(handShake, 0, handShake.Length);
@@ -115,7 +115,7 @@ namespace ChipperShare
                 loc = SaveFile?.Invoke();
             }
 
-            LibChipper.External.SaveBin(loc,_data);
+            External.SaveBin(loc,_data);
             PublicLog?.Invoke("Saved file.");
         }
     }
