@@ -7,7 +7,7 @@
 
 This project is a a continuation of [ChipperUI](https://github.com/zsotroav/ChipperUI), a simple encryption/decryption application. It uses a symmetric key for encrypting and decrypting binary data. ChipperShare includes a Windows Forms-based UI.
 
-The application is divided into Server and Client parts in the same executable. both can run at the same time and either one can have multiple instances running if needed.
+The application is divided into server and client parts in the same executable. Both can run at the same time and either one can have multiple instances running if needed.
 
 Keys are generated based on a user-provided passphrase, but they aren't stored on the drive. Keys are used on a connection basis and only appear as passphrases to the user.
 
@@ -50,7 +50,7 @@ The server starts listening to connections on its IP and the port `13000`. When 
 
 When clicked on the client button in the main form, the client form is initialized. The user must enter the server's IP and the passphrase (and choose which IP (internet card) to use for the connection) to initialize the connection.
 
-The client requests a login to the server and begins authentication, then sends/requests data as described in [protocol](#protocol)
+The client requests a login to the server and begins authentication, then sends/requests data as described in [protocol](#protocol).
 
 ## Protocol
 
@@ -68,11 +68,11 @@ After the initial connection, the server will wait for the client to send an enc
 
 If the server accepts the authentication attempt, it will respond (in UTF8 plain text) with `READY`, and the server will advance to the next step of sending extra data. If the connection is denied, `ABORT` will be sent instead.
 
-## Extra data
+### Extra data
 
 The server will send the file's name and the sent data's size to ensure that the client is ready to accept it. The file name is encrypted, but the sent data's size is not.
 
-## File
+### File
 
 After all metadata and extra data are sent, the server will begin writing the encrypted file's data to the stream in 1024 byte chunks. Once all data is sent, the connection is closed, and the server is stopped. Similarly, the client will close the connection to the server once the file is saved.
 
