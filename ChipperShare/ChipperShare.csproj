@@ -4,6 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Resources\upload.ico</ApplicationIcon>
+    <Authors>zsotroav</Authors>
+    <Company>zsotroav</Company>
+    <Product>zsotroav's ChipperShare</Product>
+    <Copyright>zsotroav 2021, All rights reserved.</Copyright>
+    <Win32Resource></Win32Resource>
   </PropertyGroup>
 
   <ItemGroup>
