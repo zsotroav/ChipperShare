@@ -14,7 +14,7 @@ namespace ChipperShare
 
         public IPAddress IP;
         public static readonly int Port = 13000;
-        public static readonly int ProtocolVersion = 1;
+        public static readonly int ProtocolVersion = 2;
 
         public string FileLoc;
 
@@ -101,12 +101,18 @@ namespace ChipperShare
             var i = _stream.Read(_buffer, 0, _buffer.Length);
             _data = _buffer[..i];
 
-            if (AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, _key)) != expected)
+            var handsDec = AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, _key));
+            if (handsDec != expected)
             {
                 _stream.Write(AlgorithmStatic.EncodeBytes("ABORT"));
                 _client.Close();
                 _listenerServer.Stop();
                 PublicLog?.Invoke("The client-server handshake failed. Connection aborted.");
+
+                var handsDecSplit = handsDec.Split(':');
+                if (handsDecSplit.Length > 2 && handsDecSplit[2] == ProtocolVersion.ToString())
+                    PublicLog?.Invoke("The client-server protocol version is mismatched.");
+
                 return;
             }
 
@@ -119,15 +125,21 @@ namespace ChipperShare
 
         private void Send()
         {
-            // File name
-            var fileNameByte = AlgorithmStatic.EncodeBytes( External.NameFromPath(FileLoc));
-            _stream.Write(_algorithm.EncryptData(fileNameByte, _key));
-
             _data = _algorithm.EncryptData(External.LoadBin(FileLoc), _key);
-            
+
             // File size
             var dataLength = BitConverter.GetBytes(_data.Length);
             _stream.Write(dataLength, 0, 4);
+
+            var fileNameByte = AlgorithmStatic.EncodeBytes( External.NameFromPath(FileLoc));
+
+            // File name size
+            var fileNameSize = BitConverter.GetBytes(fileNameByte.Length);
+            _stream.Write(fileNameSize, 0, 4);
+
+            // File name
+            fileNameByte = _algorithm.EncryptData(fileNameByte, _key);
+            _stream.Write(fileNameByte, 0, fileNameByte.Length);
 
             var bytesSent = 0;
             var bytesLeft = _data.Length;

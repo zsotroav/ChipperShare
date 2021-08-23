@@ -18,7 +18,7 @@ namespace ChipperShare
         public IPAddress RemoteIP;
 
         public static readonly int Port = 13000;
-        public static readonly int ProtocolVersion = 1;
+        public static readonly int ProtocolVersion = 2;
         
         private TcpClient _client;
 
@@ -84,16 +84,22 @@ namespace ChipperShare
         {
             PublicLog?.Invoke("The server accepted the connection. Receiving file...");
 
-            // File name
-            int i = _stream.Read(_buffer, 0, _buffer.Length);
-            _data = _buffer[..i];
-            FileName = AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, Key));
-            FileExt = External.ExtFromPath(FileName);
-
             // File size
             var fileSizeBytes = new byte[4];
             _stream.Read(fileSizeBytes, 0, 4);
             var dataLength = BitConverter.ToInt32(fileSizeBytes, 0);
+
+            // File name size
+            var fileNameSize = new byte[4];
+            _stream.Read(fileNameSize, 0, 4);
+            var fileNameLength = BitConverter.ToInt32(fileNameSize, 0);
+
+            // File name
+            int i = _stream.Read(_buffer, 0, fileNameLength);
+
+            _data = _buffer[..i];
+            FileName = AlgorithmStatic.EncodeString(_algorithm.EncryptData(_data, Key));
+            FileExt = External.ExtFromPath(FileName);
 
             var bytesLeft = dataLength;
             var bytesRead = 0;

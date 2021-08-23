@@ -56,7 +56,7 @@ namespace ChipperShare
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(54, 22);
-            this.toolStripLabel1.Text = "Server v1";
+            this.toolStripLabel1.Text = "Server v2";
             // 
             // toolStripLabel2
             // 
