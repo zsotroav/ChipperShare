@@ -56,6 +56,8 @@ The client requests a login to the server and begins authentication, then sends/
 
 The communication protocol is a custom-designed information exchanger. Not to be confused with the underlying network protocol, TCP on the port `13000`.
 
+For the protocol's history and legacy versions, see [protocol_history.md](protocol_history.md).
+
 ### Connecting
 
 The client initializes a connection to the server with an IP. The server accepts the first incoming connection and will await authentication.
@@ -70,11 +72,11 @@ If the server accepts the authentication attempt, it will respond (in UTF8 plain
 
 ### Extra data
 
-The server will send the file's name and the sent data's size to ensure that the client is ready to accept it. The file name is encrypted, but the sent data's size is not.
+The server will send the file's size, file name's size, and the sent file's name to ensure that the client is ready to accept and process it. The file name is encrypted, but the size information is not.
 
 ### File
 
-After all metadata and extra data are sent, the server will begin writing the encrypted file's data to the stream in 1024 byte chunks. Once all data is sent, the connection is closed, and the server is stopped. Similarly, the client will close the connection to the server once the file is saved.
+After all extra data are sent, the server will begin writing the encrypted file's data to the stream in 1024 byte chunks. Once all data is sent, the connection is closed, and the server is stopped. Similarly, the client will close the connection to the server once the file is saved.
 
 On the client-side, the save file dialog's return values are what the received file is saved as. If the user cancels the dialog, a warning message box is displayed to ask if the user wants to discard the file or attempt to choose a location for it again.
 
