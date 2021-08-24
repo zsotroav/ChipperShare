@@ -30,7 +30,7 @@ If the server accepts the authentication attempt, it will respond (in UTF8 plain
 
 ### Data exchange
 
-The alpha version of the protocol only sent the file's binary data encrypted without any extra data
+The alpha version of the protocol only sent the file's binary data encrypted without any extra data.
 
 ## Beta
 
@@ -52,7 +52,7 @@ The Beta version was the first one to include file name communication. The serve
 
 Version 1 is the first release version publically available on GitHub.
 
-Code name `Optimize`
+Code name: `Optimize`
 
 ### Authentication
 
@@ -60,11 +60,11 @@ The authentication protocol remains the same.
 
 ### Data exchange
 
-The server will now send the file's size before sending the file.
+The server will now send the file's size in exactly 4 bytes before sending the file.
 
 Order of sent data:
 - Filename
-- File size
+- File size (fixed 4 bytes)
 - File data
 
 ## Version 2 - Cross-platform
@@ -73,7 +73,7 @@ Order of sent data:
 
 Version 2 is the second release version publically available on GitHub. It was developed to ensure compatibility between different platforms and devices.
 
-Code name `Cross-platform`
+Code name: `Cross-platform`
 
 ### Authentication
 
@@ -81,10 +81,10 @@ The authentication protocol remains the same, but the server will now notify the
 
 ### Data exchange
 
-The server will now send the file's name's size before sending the file name.
+The server will now send the file's name's size in exactly 4-4 bytes before sending the file name.
 
 Order of sent data:
-- File size
-- Filename size
+- File size (fixed 4 bytes)
+- Filename size (fixed 4 bytes)
 - Filename
 - File data
